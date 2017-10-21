@@ -36,6 +36,8 @@ namespace PermitPalace
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddScoped<IPersonnelService, PersonnelService>();
+            services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<IFileDocumentService, FileDocumentService>();
             services.AddAuthorization(options =>
             {
                 foreach(var role in ApplicationRoles.GetAllRoles())
@@ -83,7 +85,6 @@ namespace PermitPalace
             CreateRoles(serviceProvider).Wait();
            
           
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

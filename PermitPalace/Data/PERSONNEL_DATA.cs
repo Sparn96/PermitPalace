@@ -34,7 +34,7 @@ namespace PermitPalace.Data
         public string DCTB { get; set; }
         public string HEIGHT { get; set; }
         public string HEIGHT_IN_FEET { get; set; }
-        public string HEIGHT_IN_INCHES { get; set; }
+        public int HEIGHT_IN_INCHES { get; set; }
         public string WEIGH_IN_DATE { get; set; }
         public string WEIGHT { get; set; }
         public string BODY_FAT_PERCENT { get; set; }
@@ -119,8 +119,8 @@ namespace PermitPalace.Data
         public string PLACE_OF_BIRTH { get; set; }
         public string CIVILIAN_LIC_STATE { get; set; }
         public string CIVILIAN_LIC_NUMBER { get; set; }
-        public string CIVILIAN_ISSUE_DATE { get; set; }
-        public string CIVILIAN_EXP_DATE { get; set; }
+        public DateTime CIVILIAN_ISSUE_DATE { get; set; }
+        public DateTime CIVILIAN_EXP_DATE { get; set; }
         public string CLASS_OF_VEHICLE { get; set; }
         public string ENDORSEMENTS { get; set; }
         public string _1ST_POV_YEAR { get; set; }
@@ -223,6 +223,55 @@ namespace PermitPalace.Data
         public bool DOES_WEAR_GLASSES_OR_CONTACTS_WHILE_DRIVING { get; set; }
         public string _3270 { get; set; }
         public string REMARKS { get; set; }
+
+    }
+    public class BasicPersonnelInfo
+    {
+        public Guid PERSONNEL_ID { get; set; }
+        public string SERVICE { get; set; }
+        public string DOD_NUMBER { get; set; }
+        public string RANK { get; set; }
+        public string LAST_NAME { get; set; }
+        public string FIRST_NAME { get; set; }
+        public string MIDDLE_NAME { get; set; }
+        public int HEIGHT_IN_INCHES { get; set; }
+        public string HAIR_COLOR { get; set; }
+        public bool WEARS_GLASSES { get; set; }
+        public string EYE_COLOR { get; set; }
+        public string SEX { get; set; }
+        public DateTime DOB { get; set; }
+        public int AGE { get; set; }
+        public string WEIGHT { get; set; }
+        public string HOME_OF_RECORD { get; set; }
+        public string PLACE_OF_BIRTH { get; set; }
+        public string CIVILIAN_LIC_STATE { get; set; }
+        public string CIVILIAN_LIC_NUMBER { get; set; }
+        public DateTime CIVILIAN_ISSUE_DATE { get; set; }
+        public DateTime CIVILIAN_EXP_DATE { get; set; }
+        public string CLASS_OF_VEHICLE { get; set; }
+        public string MED_CERT_REQ { get; set; }
+        //Health info
+        public bool POOR_HEARING_IN_ONE_OR_BOTH { get; set; }
+        public bool EYE_DISEASE { get; set; }
+        public bool POOR_VIS_IN_ONE_OR_BOTH { get; set; }
+        public bool DIABETES { get; set; }
+        public bool PALPITATION_CHEST_PAIN_SHORT_BREATH { get; set; }
+        public bool DIZZINESS_OR_FAINT_SPELLS { get; set; }
+        public bool FREQUENT_OR_SEVERE_HEADACHES { get; set; }
+        public bool HIGH_OR_LOW_BLOOD_PRESSURE { get; set; }
+        public bool DRUG_OR_NARCODIC_HABIT { get; set; }
+        public bool ARTHRITIS_RHEUMATISM_SWOLLEN_OR_PAINFUL_JOINTS { get; set; }
+        public bool LOSS_OF_HAND_ARM_FOOT_OR_LEG { get; set; }
+        public bool DEFOMITY_OF_HAND_ARM_FOOT_OR_LEG { get; set; }
+        public bool NERVOUS_OR_MENTAL_TROUBLE { get; set; }
+        public bool BLACKOUTS_EPILIEPSY { get; set; }
+        public bool SUGAR_OR_ALBUMIN_IN_URINE { get; set; }
+
+        public bool EXCESSIVE_DRINKING_HABIT { get; set; }
+        public bool OTHER_SERIOUS_DEFECTS_OR_DISEASE { get; set; }
+        public bool DOES_WEAR_HEARING_AID { get; set; }
+        public bool DOES_WEAR_GLASSES_OR_CONTACTS_WHILE_DRIVING { get; set; }
+        public string _3270 { get; set; }
 
     }
 }

@@ -97,7 +97,7 @@ namespace PermitPalace.Controllers
                     marine.FIRST_NAME = model.FIRST_NAME;
                     marine.LAST_NAME = model.LAST_NAME;
                     marine.MIDDLE_NAME = model.MIDDLE_NAME;
-                    marine.HEIGHT_IN_INCHES = model.HEIGHT_IN_INCHES.ToString();
+                    marine.HEIGHT_IN_INCHES = model.HEIGHT_IN_INCHES;
                     marine.DOB = model.DOB;
                     marine.SEX = model.SEX;
                     marine.AGE = model.AGE;

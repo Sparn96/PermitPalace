@@ -13,6 +13,7 @@ namespace PermitPalace.Services
         PERSONNEL_DATA Update(PERSONNEL_DATA update);
         PERSONNEL_DATA Remove(PERSONNEL_DATA remove);
         PERSONNEL_DATA Get(string DOD_NUMBER);
+        BasicPersonnelInfo GetBasicInformation(string DOD_NUMBER);
         IEnumerable<PERSONNEL_DATA> FindByName(string full_name);
         IEnumerable<PERSONNEL_DATA> FindByDOB(DateTime dob);
         IEnumerable<PERSONNEL_DATA> FindByPlaceOfBirth(string place);
@@ -72,6 +73,55 @@ namespace PermitPalace.Services
         public PERSONNEL_DATA Get(string DOD_NUMBER)
         {
             return _context.PERSONNEL_DATA.FirstOrDefault(f => f.DOD_NUMBER == DOD_NUMBER);
+        }
+
+        public BasicPersonnelInfo GetBasicInformation(string DOD_NUMBER)
+        {
+            BasicPersonnelInfo marine = new BasicPersonnelInfo();
+            PERSONNEL_DATA model = Get(DOD_NUMBER);
+            marine.DOD_NUMBER = model.DOD_NUMBER;
+            marine.RANK = model.RANK;
+            marine.FIRST_NAME = model.FIRST_NAME;
+            marine.LAST_NAME = model.LAST_NAME;
+            marine.MIDDLE_NAME = model.MIDDLE_NAME;
+            marine.HEIGHT_IN_INCHES = model.HEIGHT_IN_INCHES;
+            marine.DOB = model.DOB;
+            marine.SEX = model.SEX;
+            marine.AGE = model.AGE;
+            marine.WEIGHT = model.WEIGHT;
+            marine.HOME_OF_RECORD = model.HOME_OF_RECORD;
+            marine.PLACE_OF_BIRTH = model.PLACE_OF_BIRTH;
+            marine.CIVILIAN_LIC_STATE = model.CIVILIAN_LIC_STATE;
+            marine.CIVILIAN_LIC_NUMBER = model.CIVILIAN_LIC_NUMBER;
+            marine.CIVILIAN_ISSUE_DATE = model.CIVILIAN_ISSUE_DATE;
+            marine.CIVILIAN_EXP_DATE = model.CIVILIAN_EXP_DATE;
+            marine.CLASS_OF_VEHICLE = model.CLASS_OF_VEHICLE;
+            marine.HAIR_COLOR = model.HAIR_COLOR;
+            marine.EYE_COLOR = model.EYE_COLOR;
+            marine.MED_CERT_REQ = model.MED_CERT_REQ;
+            marine.WEARS_GLASSES = model.WEARS_GLASSES;
+            //HEALTH EVAL.
+            marine.POOR_HEARING_IN_ONE_OR_BOTH = model.POOR_HEARING_IN_ONE_OR_BOTH;
+            marine.EYE_DISEASE = model.EYE_DISEASE;
+            marine.POOR_VIS_IN_ONE_OR_BOTH = model.POOR_VIS_IN_ONE_OR_BOTH;
+            marine.DIABETES = model.DIABETES;
+            marine.PALPITATION_CHEST_PAIN_SHORT_BREATH = model.PALPITATION_CHEST_PAIN_SHORT_BREATH;
+            marine.DIZZINESS_OR_FAINT_SPELLS = model.DIZZINESS_OR_FAINT_SPELLS;
+            marine.FREQUENT_OR_SEVERE_HEADACHES = model.FREQUENT_OR_SEVERE_HEADACHES;
+            marine.HIGH_OR_LOW_BLOOD_PRESSURE = model.HIGH_OR_LOW_BLOOD_PRESSURE;
+            marine.DRUG_OR_NARCODIC_HABIT = model.DRUG_OR_NARCODIC_HABIT;
+            marine.ARTHRITIS_RHEUMATISM_SWOLLEN_OR_PAINFUL_JOINTS = model.ARTHRITIS_RHEUMATISM_SWOLLEN_OR_PAINFUL_JOINTS;
+            marine.LOSS_OF_HAND_ARM_FOOT_OR_LEG = model.LOSS_OF_HAND_ARM_FOOT_OR_LEG;
+            marine.DEFOMITY_OF_HAND_ARM_FOOT_OR_LEG = model.DEFOMITY_OF_HAND_ARM_FOOT_OR_LEG;
+            marine.NERVOUS_OR_MENTAL_TROUBLE = model.NERVOUS_OR_MENTAL_TROUBLE;
+            marine.BLACKOUTS_EPILIEPSY = model.BLACKOUTS_EPILIEPSY;
+            marine.SUGAR_OR_ALBUMIN_IN_URINE = model.SUGAR_OR_ALBUMIN_IN_URINE;
+            marine.EXCESSIVE_DRINKING_HABIT = model.EXCESSIVE_DRINKING_HABIT;
+            marine.OTHER_SERIOUS_DEFECTS_OR_DISEASE = model.OTHER_SERIOUS_DEFECTS_OR_DISEASE;
+            marine.DOES_WEAR_HEARING_AID = model.DOES_WEAR_HEARING_AID;
+            marine.DOES_WEAR_GLASSES_OR_CONTACTS_WHILE_DRIVING = model.DOES_WEAR_GLASSES_OR_CONTACTS_WHILE_DRIVING;
+            marine._3270 = model._3270;
+            return marine;
         }
 
         public PERSONNEL_DATA Remove(PERSONNEL_DATA remove)

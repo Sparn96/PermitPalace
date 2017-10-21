@@ -38,9 +38,9 @@ namespace PermitPalace.Models.HomeViewModels
         [Required]
         public string CIVILIAN_LIC_NUMBER { get; set; }
         [Required, DataType(DataType.Date)]
-        public string CIV_ISSUE_DATE { get; set; }
+        public DateTime CIV_ISSUE_DATE { get; set; }
         [Required, DataType(DataType.Date)]
-        public string CIV_EXP_DATE { get; set; }
+        public DateTime CIV_EXP_DATE { get; set; }
         [Required]
         public string CLASS_OF_VEHICLE { get; set; }
         [Required]
