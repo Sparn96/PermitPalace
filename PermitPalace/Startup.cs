@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PermitPalace.Data;
 using PermitPalace.Models;
 using PermitPalace.Services;
+using PermitPalace.GlobalUtilities;
 
 namespace PermitPalace
 {
@@ -32,16 +33,39 @@ namespace PermitPalace
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-
+            services.AddScoped<IPersonnelService, PersonnelService>();
+            services.AddAuthorization(options =>
+            {
+                foreach(var role in ApplicationRoles.GetAllRoles())
+                {
+                    options.AddPolicy("Require" + role, p =>
+                    {
+                        p.RequireRole(role);
+                    });
+                }
+               
+            });
             services.AddMvc();
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        private async Task CreateRoles(IServiceProvider serviceProvider)
         {
+            RoleManager<IdentityRole> _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            foreach (string role in ApplicationRoles.GetAllRoles())
+            {
+                var roleExist = await _roleManager.RoleExistsAsync(role);
+                if (!roleExist)
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+        }
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
+        {
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -56,6 +80,9 @@ namespace PermitPalace
             app.UseStaticFiles();
 
             app.UseAuthentication();
+            CreateRoles(serviceProvider).Wait();
+           
+          
 
             app.UseMvc(routes =>
             {

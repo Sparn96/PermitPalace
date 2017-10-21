@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using PermitPalace.Models;
 using PermitPalace.Models.AccountViewModels;
 using PermitPalace.Services;
+using PermitPalace.GlobalUtilities;
 
 namespace PermitPalace.Controllers
 {
@@ -228,8 +229,8 @@ namespace PermitPalace.Controllers
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
+                   // await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                    await _userManager.AddToRoleAsync(user, ApplicationRoles.ADMIN);
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User created a new account with password.");
                     return RedirectToLocal(returnUrl);

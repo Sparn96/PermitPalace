@@ -1,0 +1,210 @@
+﻿@{
+    ViewData["Title"] = "Add Profile";
+}
+@using PermitPalace.Models.HomeViewModels;
+@model AddProfileViewModel
+<div class="container col-md-12" style="margin-top:100px;">
+    <h2 class="text-center center-block" style="margin-bottom:25px">PERSONNEL DATE INFO</h2>
+    @using (Html.BeginForm())
+    {
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">RANK:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="RANK" style="width:100%;" />
+                <span asp-validation-for="RANK"></span>
+            </div>
+
+            <div class="col-md-2">
+                <b class="pull-right">HOME OF RECORD:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="HOME_OF_RECORD" style="width:100%;" />
+                <span asp-validation-for="HOME_OF_RECORD"></span>
+            </div>
+        </div>
+
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">LAST NAME:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="LAST_NAME" style="width:100%;" />
+                <span asp-validation-for="LAST_NAME"></span>
+            </div>
+
+            <div class="col-md-2">
+                <b class="pull-right">PLACE OF BIRTH:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="PLACE_OF_BIRTH" style="width:100%;" />
+                <span asp-validation-for="PLACE_OF_BIRTH"></span>
+            </div>
+        </div>
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">FIRST NAME:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="FIRST_NAME" style="width:100%;" />
+                <span asp-validation-for="FIRST_NAME"></span>
+            </div>
+
+            <div class="col-md-2">
+                <b class="pull-right">CIVILIAN LIC STATE:</b>
+            </div>
+            <div class="col-md-3">
+                <select asp-for="CIVILIAN_LIC_STATE" style="width:100%;" asp-items="ViewBag.STATES"></select>
+                <span asp-validation-for="CIVILIAN_LIC_STATE"></span>
+            </div>
+        </div>
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">MIDDLE NAME:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="MIDDLE_NAME" style="width:100%;" />
+                <span asp-validation-for="MIDDLE_NAME"></span>
+            </div>
+
+            <div class="col-md-2">
+                <b class="pull-right">CIV LIC EXP DATE:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="CIV_EXP_DATE" style="width:100%;" />
+                <span asp-validation-for="CIV_EXP_DATE"></span>
+            </div>
+        </div>
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">DOD ID NUMBER:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="DOD_ID_NUMBER" style="width:100%;" />
+                <span asp-validation-for="DOD_ID_NUMBER"></span>
+            </div>
+
+            <div class="col-md-2">
+                <b class="pull-right">HAIR COLOR:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="HAIR_COLOR" style="width:100%;" />
+                <span asp-validation-for="HAIR_COLOR"></span>
+            </div>
+        </div>
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">CLASS OF VEHICLE:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="CLASS_OF_VEHICLE" style="width:100%;" />
+                <span asp-validation-for="CLASS_OF_VEHICLE"></span>
+            </div>
+
+            <div class="col-md-2">
+                <b class="pull-right">EYE COLOR:</b>
+            </div>
+            <div class="col-md-3">
+                <select asp-for="EYE_COLOR" style="width:100%;">
+                    <option value="BLU">BLUE</option>
+                    <option value="BLK">BLACK</option>
+                    <option value="BRN">BROWN</option>
+                    <option value="HZL">HAZEL</option>
+                    <option value="GRN">GREEN</option>
+                </select>
+                <span asp-validation-for="EYE_COLOR"></span>
+            </div>
+        </div>
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">DOB:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="DOB" style="width:100%;" />
+                <span asp-validation-for="DOB"></span>
+            </div>
+
+            <div class="col-md-2">
+                <b class="pull-right">MED CERT REQUIRED:</b>
+            </div>
+            <div class="col-md-3">
+                <select asp-for="MED_CERT_REQUIRED" style="width:100%;">
+                    <option>None</option>
+                    <option value="*MED CERT REQUIRED">MED CERT REQUIRED</option>
+                    <option value="*MED CERT REQUIRED / CORRECTIVE LENSES REQ.">MED CERT REQUIRED / CORRECTIVE LENSES REQ</option>
+                </select>
+                <span asp-validation-for="MED_CERT_REQUIRED"></span>
+            </div>
+        </div>
+
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">SEX:</b>
+            </div>
+            <div class="col-md-3">
+                <select asp-for="SEX" style="width:100%;">
+                    <option value="M">MALE</option>
+                    <option value="F">FEMALE</option>
+                </select>
+                <span asp-validation-for="SEX"></span>
+            </div>
+            <div class="col-md-2">
+                <b class="pull-right">AGE:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="AGE" style="width:100%;" />
+                <span asp-validation-for="AGE"></span>
+            </div>
+           
+        </div>
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">CIV LIC NUMBER:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="CIVILIAN_LIC_NUMBER" style="width:100%;" />
+                <span asp-validation-for="CIVILIAN_LIC_NUMBER"></span>
+            </div>
+            <div class="col-md-2">
+                <b class="pull-right">HEIGHT IN INCHES:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="HEIGHT_IN_INCHES" style="width:100%;" />
+                <span asp-validation-for="HEIGHT_IN_INCHES"></span>
+            </div>
+        </div>
+        <div class="form-group text-center row">
+            <div class="col-md-3">
+                <b class="pull-right">WEIGHT:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="WEIGHT" style="width:100%;" />
+                <span asp-validation-for="WEIGHT"></span>
+            </div>
+            <div class="col-md-2">
+                <b class="pull-right">CIV LIC ISSUE DATE:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="CIV_ISSUE_DATE" style="width:100%;" />
+                <span asp-validation-for="CIV_ISSUE_DATE"></span>
+            </div>
+        </div>
+        <div class="form-group text-center row">
+            
+            <div class="col-md-3">
+                <b class="pull-right">WEARS GLASSES:</b>
+            </div>
+            <div class="col-md-3">
+                <input asp-for="WEARS_GLASSES" style="width:100%;" />
+            </div>
+          
+        </div>
+        <div class="form-group text-center row">
+            <input type="submit" value="Add Applicant Info" />
+        </div>
+    }
+    
+
+</div>
