@@ -24,5 +24,6 @@ namespace PermitPalace.Data
         public DateTime DATE_SIGNED { get; set; }
         public string PDF_FILENAME { get; set; }
         public string DOCUMENT_NAME { get; set; }
+        public Guid PERMIT_GUID { get; set; }
     }
 }

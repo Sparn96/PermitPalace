@@ -15,5 +15,6 @@ namespace PermitPalace.Data
         public string PERMIT_NUMBER { get; set; }
         public string APPROVED_BY { get; set; }
         public Guid PERSONNEL_ID { get; set; }
+
     }
 }

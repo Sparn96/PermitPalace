@@ -2,6 +2,7 @@
     ViewData["Title"] = "Add Profile";
 }
 @using PermitPalace.Models.HomeViewModels;
+@using PermitPalace.GlobalUtilities
 @model AddProfileViewModel
 <div class="container col-md-12" style="margin-top:100px;">
     <h2 class="text-center center-block" style="margin-bottom:25px">PERSONNEL DATE INFO</h2>
@@ -13,7 +14,7 @@
                 <b class="pull-right">RANK:</b>
             </div>
             <div class="col-md-3">
-                <input asp-for="RANK" style="width:100%;" />
+                <select asp-for="RANK" asp-items="Rank.GetRanksAsSelectList()" style="width:100%;"></select>
                 <span asp-validation-for="RANK"></span>
             </div>
 

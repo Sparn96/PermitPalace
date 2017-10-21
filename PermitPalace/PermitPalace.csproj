@@ -23,4 +23,10 @@
     <Folder Include="wwwroot\Documents\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Spire.Pdf">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\e-iceblue\Spire.pdf-fe\Bin\NET4.0 ClientProfile\Spire.Pdf.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

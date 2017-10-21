@@ -38,6 +38,7 @@ namespace PermitPalace
             services.AddScoped<IPersonnelService, PersonnelService>();
             services.AddScoped<IDocumentService, DocumentService>();
             services.AddScoped<IFileDocumentService, FileDocumentService>();
+            services.AddScoped<IPermitService, PermitService>();
             services.AddAuthorization(options =>
             {
                 foreach(var role in ApplicationRoles.GetAllRoles())

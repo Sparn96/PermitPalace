@@ -11,6 +11,7 @@ using PermitPalace.Models.HomeViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PermitPalace.Data;
 using PermitPalace.Services;
+using Spire.Pdf;
 
 namespace PermitPalace.Controllers
 {
