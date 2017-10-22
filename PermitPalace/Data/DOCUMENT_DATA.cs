@@ -19,6 +19,7 @@ namespace PermitPalace.Data
         public Guid FILLED_DOCUMENT_GUID { get; set; }
         public Guid DOCUMENT_GUID { get; set; }
         public bool IS_SIGNED { get; set; }
+        public bool IS_APPROVED { get; set; }
         public Guid PERSONNEL_OWNER { get; set; }
         public string DOD_ID_OF_APPROVING_SUPERVISOR { get; set; }
         public DateTime DATE_SIGNED { get; set; }

@@ -15,7 +15,7 @@ namespace PermitPalace.Models.HomeViewModels
         public string LAST_NAME { get; set; }
         [Required]
         public string FIRST_NAME { get; set; }
-        [Required]
+        
         public string MIDDLE_NAME { get; set; }
         [Required]
         public string DOD_ID_NUMBER { get; set; }
@@ -23,6 +23,8 @@ namespace PermitPalace.Models.HomeViewModels
         public DateTime DOB { get; set; }
         [Required]
         public string SEX { get; set; }
+        [Required]
+        public string ORGANIZATION { get; set; }
         [Required]
         public int AGE { get; set; }
         [Required]

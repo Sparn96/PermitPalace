@@ -1,7 +1,20 @@
 ﻿@{
     ViewData["Title"] = "About";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+<div class="col-md-12 container-fluid">
+    <h2>@ViewData["Title"]</h2>
 
-<p>Use this area to provide additional information.</p>
+    <div class="col-md-offset-3 col-md-6 container">
+        <div class="panel panel-heading text-center">
+            <h3>Marine Corp Coding Challenge</h3>
+        </div>
+        <div class="panel-body text-center">
+            <p >The idea created by LeRoy and Brian was aimed to reduce the Marine permit paper-mountian by having all permits stored in an easily accessable database. I helped them take one step closer towards that goal this weekend.</p>
+            <hr />
+            <h4>The Technical</h4>
+            <p>THis is an ASP.NET Core 2.0 environment. The webiste connects to an external SQL server in order to store and gather data. I used Entity Framework to manage the data models and sql queries. I used iTextSharp in order to interface with the PDF documents. Bootstrap and jQuery were used for front end design.</p>
+        </div>
+    </div>
+</div>
+
+
