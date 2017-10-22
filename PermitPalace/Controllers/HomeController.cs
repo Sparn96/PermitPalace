@@ -389,7 +389,7 @@ namespace PermitPalace.Controllers
 
                 RecipientViewRequest viewOptions = new RecipientViewRequest()
                 {
-                    ReturnUrl = "https://localhost:44372/api/Signed/?id=" + doc.DOCUMENT_GUID,
+                    ReturnUrl = "https://localhost:44372/api/Signed/?id=" + doc.FILLED_DOCUMENT_GUID,
                     ClientUserId = doc.PERSONNEL_OWNER.ToString(),
                     AuthenticationMethod = "email",
                     UserName = enDef.Recipients.Signers[0].Name,

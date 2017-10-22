@@ -23,7 +23,7 @@ namespace PermitPalace.Controllers
         [HttpGet]
         public IActionResult Signed(string id)
         {
-            var doc = _FiledDocumentService.Get(new Guid(id));
+            var doc = _FiledDocumentService.Get(Guid.Parse(id));
             doc.IS_SIGNED = true;
            // Console.WriteLine("\n" + d.@event);
             _FiledDocumentService.Update(doc);
