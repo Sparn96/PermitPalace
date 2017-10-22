@@ -291,7 +291,7 @@ namespace PermitPalace.Controllers
                 SearchResultViewModel res = new SearchResultViewModel();
                 res.document_name = result.DOCUMENT_NAME;
                 var owner = _PersonnelService.Get(result.PERSONNEL_OWNER);
-                res.document_owner_name = owner.LAST_NAME + ", " + owner.FIRST_NAME + " " + owner.MIDDLE_NAME[0] + ".";
+                res.document_owner_name = owner.LAST_NAME + ", " + owner.FIRST_NAME + " " + (String.IsNullOrEmpty(owner.MIDDLE_NAME) ? ' ' : owner.MIDDLE_NAME[0]) + ".";
                 res.Is_Signed = result.IS_SIGNED;
                 res.LinkedPermit = result.PERMIT_GUID;
                 res.filed_document_guid = result.FILLED_DOCUMENT_GUID;
