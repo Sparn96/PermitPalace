@@ -37,7 +37,13 @@ namespace PermitPalace.Controllers
         IDocumentService _DocumentService;
         IFileDocumentService _FileDocumentService;
 
-
+        /// <summary>
+        /// Dependency Injection for the HomeController
+        /// </summary>
+        /// <param name="ips"></param>
+        /// <param name="env"></param>
+        /// <param name="idoc"></param>
+        /// <param name="ifds"></param>
         public HomeController(IPersonnelService ips, IHostingEnvironment env, IDocumentService idoc, IFileDocumentService ifds)
         {
             _PersonnelService = ips;
@@ -50,6 +56,10 @@ namespace PermitPalace.Controllers
 
             return View();
         }
+        /// <summary>
+        /// Allows the Web user to add in a Marine's data. This is an alternative to the Marine using the app.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult AddProfile()
         {
@@ -138,7 +148,7 @@ namespace PermitPalace.Controllers
                     marine.EYE_COLOR = model.EYE_COLOR;
                     marine.MED_CERT_REQ = model.MED_CERT_REQUIRED;
                     marine.WEARS_GLASSES = model.WEARS_GLASSES;
-                    //HEALTH EVAL.
+                    //HEALTH EVAL. This will be used for the OF_... .pdf mandatory file.
                     marine.POOR_HEARING_IN_ONE_OR_BOTH = model.POOR_HEARING_IN_ONE_OR_BOTH;
                     marine.EYE_DISEASE = model.EYE_DISEASE;
                     marine.POOR_VIS_IN_ONE_OR_BOTH = model.POOR_VIS_IN_ONE_OR_BOTH;
@@ -164,12 +174,12 @@ namespace PermitPalace.Controllers
                     _PersonnelService.Add(marine, HttpContext.User.Identity.Name);
 
                     var newMarine = _DocumentService.GetByName("NAVMC_10694.pdf");
-
+                    //Creates a record in the DB that this user has filled out this information.
                     FILLED_DOCUMENT newDoc = new FILLED_DOCUMENT();
                     newDoc.created_by = HttpContext.User.Identity.Name;
                     newDoc.date_created = DateTime.Now;
                     newDoc.date_last_modified = DateTime.Now;
-                    //newDoc.DATE_SIGNED = null;
+                    //newDoc.DATE_SIGNED = null; This needs to reflect in the website as something other than jan 1st 1900
                     newDoc.DOCUMENT_GUID = newMarine.DOCUEMNT_GUID;
                     newDoc.DOCUMENT_NAME = marine.DOD_NUMBER + newMarine.DOCUMENT_NAME;
                     newDoc.DOD_ID_OF_APPROVING_SUPERVISOR = null;
@@ -177,7 +187,7 @@ namespace PermitPalace.Controllers
                     newDoc.PDF_FILENAME = newMarine.DOCUMENT_NAME;
                     newDoc.IS_SIGNED = false;
                     newDoc.last_modified_by = HttpContext.User.Identity.Name;
-                    //newDoc.PERMIT_GUID = null;
+                    //newDoc.PERMIT_GUID = null; a blank guid will be ok 
                     newDoc.PERSONNEL_OWNER = marine.PERSONNEL_ID;
                     _FileDocumentService.File(newDoc,HttpContext.User.Identity.Name);
 
@@ -193,6 +203,7 @@ namespace PermitPalace.Controllers
             {
 
             }
+            ///Something went wrong, reapply states to view bag
             var states = new List<SelectListItem> {
                     new SelectListItem { Value = "AL", Text = "Alabama" },
                     new SelectListItem { Value = "AK", Text = "Alaska" },
@@ -250,6 +261,10 @@ namespace PermitPalace.Controllers
             return View();
 
         }
+        /// <summary>
+        /// This funciton "Enters the Filing Cabinet" and allows the user to filter results by a well known Marine Id number
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult FiledDocuments()
         {
@@ -285,17 +300,32 @@ namespace PermitPalace.Controllers
             return View("Results", results);
 
         }
+        /// <summary>
+        /// Displays the results of a query from the Database 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Results(List<SearchResultViewModel> model)
         {
             return View(model);
         }
+        /// <summary>
+        /// Permits are not implemented yet -- but to access them, users would navigate here 
+        /// </summary>
+        /// <param name="permit_guid"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetPermit(Guid permit_guid)
         {
             //return the model
             return View();
         }
+        /// <summary>
+        /// Queries the DocuSign API for the designated filed document via the document's guid
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult RequestSignature(string id)
         {
@@ -373,6 +403,12 @@ namespace PermitPalace.Controllers
 
             return Redirect(recipientView.Url);
         }
+        /// <summary>
+        /// Document information is retrieved from the database. Based on the document type, the PDF stamper static function will
+        /// "Stamp" the information onto the template and send the file as a result that displays inside the browser.
+        /// </summary>
+        /// <param name="filed_document_guid"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetDocument(string filed_document_guid)
         {
@@ -391,11 +427,7 @@ namespace PermitPalace.Controllers
                 
 
         }
-        [HttpGet]
-        public IActionResult Signed()
-        {
-            return View();
-        }
+     
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -408,6 +440,10 @@ namespace PermitPalace.Controllers
 
             return View();
         }
+        /// <summary>
+        /// Used purely for debug purposes -- will remove after DocumentController is finished
+        /// </summary>
+        /// <returns></returns>
         [HttpGet, Route("AddNewTemplate")]
         public IActionResult AddNewTemplate()
         {
@@ -426,6 +462,11 @@ namespace PermitPalace.Controllers
         {
             public string doc_url { get; set; }
         }
+        /// <summary>
+        /// Returns only necessary informiton from the Marine's CRM profile
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
         [HttpGet]
         public JsonResult GetBasicInformation(string guid)
         {

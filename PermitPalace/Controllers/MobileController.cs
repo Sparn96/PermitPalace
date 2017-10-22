@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace PermitPalace.Controllers
 {
+    /// <summary>
+    /// The mobile API that will
+    /// </summary>
     public struct MobileLogin
     {
         public string dod_id { get; set; }

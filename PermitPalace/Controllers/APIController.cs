@@ -27,7 +27,7 @@ namespace PermitPalace.Controllers
             doc.IS_SIGNED = true;
            // Console.WriteLine("\n" + d.@event);
             _FiledDocumentService.Update(doc, "DOCUSIGN");
-            return View();
+            return RedirectToAction("Index", "Home");
         }
         //public struct DocuSignEvent
         //{
