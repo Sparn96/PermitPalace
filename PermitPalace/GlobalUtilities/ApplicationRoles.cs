@@ -21,6 +21,7 @@ namespace PermitPalace.GlobalUtilities
         public static SelectList GetRanksAsSelectList()
         {
             var ranks = new List<SelectListItem> {
+                    new SelectListItem { Value = null, Text="None" },
                     new SelectListItem { Value = "PVT", Text = "PVT" },
                     new SelectListItem { Value = "PFC", Text = "PFC" },
                     new SelectListItem { Value = "LCPL", Text = "LCPL" },

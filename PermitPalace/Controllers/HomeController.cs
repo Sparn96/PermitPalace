@@ -11,19 +11,43 @@ using PermitPalace.Models.HomeViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PermitPalace.Data;
 using PermitPalace.Services;
-using Spire.Pdf;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using iTextSharp;
+
+using iTextSharp.text;
+using DocuSign.eSign.Api;
+
+using iTextSharp.text.pdf;
+
+using iTextSharp.text.xml;
+using System.Collections;
+using System.Text;
+using Microsoft.Extensions.Primitives;
+using DocuSign.eSign.Model;
+using Newtonsoft.Json;
+using DocuSign.eSign.Client;
 
 namespace PermitPalace.Controllers
 {
     public class HomeController : Controller
     {
         IPersonnelService _PersonnelService;
-        public HomeController(IPersonnelService ips)
+        IHostingEnvironment _HostingEnvironment;
+        IDocumentService _DocumentService;
+        IFileDocumentService _FileDocumentService;
+
+
+        public HomeController(IPersonnelService ips, IHostingEnvironment env, IDocumentService idoc, IFileDocumentService ifds)
         {
             _PersonnelService = ips;
+            _HostingEnvironment = env;
+            _DocumentService = idoc;
+            _FileDocumentService = ifds;
         }
         public IActionResult Index()
         {
+          
             return View();
         }
         [HttpGet]
@@ -88,7 +112,7 @@ namespace PermitPalace.Controllers
         [HttpPost]
         public IActionResult AddProfile(AddProfileViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 PERSONNEL_DATA marine = new PERSONNEL_DATA();
                 if (_PersonnelService.Get(model.DOD_ID_NUMBER) == null)
@@ -135,19 +159,39 @@ namespace PermitPalace.Controllers
                     marine.DOES_WEAR_HEARING_AID = model.DOES_WEAR_HEARING_AID;
                     marine.DOES_WEAR_GLASSES_OR_CONTACTS_WHILE_DRIVING = model.DOES_WEAR_GLASSES_OR_CONTACTS_WHILE_DRIVING;
                     marine._3270 = model._3270;
+                    marine.PERSONNEL_ID = new Guid();
 
                     _PersonnelService.Add(marine);
+
+                    var newMarine = _DocumentService.GetByName("NAVMC_10694.pdf");
+
+                    FILLED_DOCUMENT newDoc = new FILLED_DOCUMENT();
+                    newDoc.created_by = HttpContext.User.Identity.Name;
+                    newDoc.date_created = DateTime.Now;
+                    newDoc.date_last_modified = DateTime.Now;
+                    //newDoc.DATE_SIGNED = null;
+                    newDoc.DOCUMENT_GUID = newMarine.DOCUEMNT_GUID;
+                    newDoc.DOCUMENT_NAME = marine.DOD_NUMBER + newMarine.DOCUMENT_NAME;
+                    newDoc.DOD_ID_OF_APPROVING_SUPERVISOR = null;
+                    newDoc.FILLED_DOCUMENT_GUID = new Guid();
+                    newDoc.PDF_FILENAME = newMarine.DOCUMENT_NAME;
+                    newDoc.IS_SIGNED = false;
+                    newDoc.last_modified_by = HttpContext.User.Identity.Name;
+                    //newDoc.PERMIT_GUID = null;
+                    newDoc.PERSONNEL_OWNER = marine.PERSONNEL_ID;
+                    _FileDocumentService.File(newDoc);
+
                     return RedirectToAction("Index");
                 }
                 else
                 {
 
-                   
+
                 }
             }
             else
             {
-                
+
             }
             var states = new List<SelectListItem> {
                     new SelectListItem { Value = "AL", Text = "Alabama" },
@@ -206,6 +250,167 @@ namespace PermitPalace.Controllers
             return View();
 
         }
+        [HttpGet]
+        public IActionResult FiledDocuments()
+        {
+            FiledDocumentsViewModel model = new FiledDocumentsViewModel();
+            var docList = _DocumentService.GetAll();
+            List<SelectListItem> items = new List<SelectListItem>();
+            foreach (var doc in docList)
+            {
+                items.Add(new SelectListItem() { Text = doc.DOCUMENT_NAME, Value = doc.DOCUMENT_NAME });
+            }
+            ViewBag.docs = new SelectList(items, "Text", "Value");
+            return View();
+        }
+        [HttpPost]
+        public IActionResult FiledDocuments(FiledDocumentsViewModel model)
+        {
+            //filter the search results from the query
+            //redirect to results using another view model
+            var allFiledDocs = _FileDocumentService.GetAll(new FileFindWhereParam() { Approved_By_Supervisor_DOD_ID = model.Approved_By_Supervisor_DOD_ID, Document_Type = model.Document_Type, Personnel_DOD_ID = model.Personnel_DOD_ID, Rank = model.Rank });
+            //foreach result, add to a result card list item in another view model
+            List<SearchResultViewModel> results = new List<SearchResultViewModel>();
+            foreach (var result in allFiledDocs)
+            {
+                SearchResultViewModel res = new SearchResultViewModel();
+                res.document_name = result.DOCUMENT_NAME;
+                var owner = _PersonnelService.Get(result.PERSONNEL_OWNER);
+                res.document_owner_name = owner.LAST_NAME + ", " + owner.FIRST_NAME + " " + owner.MIDDLE_NAME[0] + ".";
+                res.Is_Signed = result.IS_SIGNED;
+                res.LinkedPermit = result.PERMIT_GUID;
+                res.filed_document_guid = result.FILLED_DOCUMENT_GUID;
+                results.Add(res);
+            }
+            return View("Results", results);
+
+        }
+        [HttpGet]
+        public IActionResult Results(List<SearchResultViewModel> model)
+        {
+            return View(model);
+        }
+        [HttpGet]
+        public IActionResult GetPermit(Guid permit_guid)
+        {
+            //return the model
+            return View();
+        }
+        [HttpGet]
+        public IActionResult GetDocument(string filed_document_guid)
+        {
+            var doc = _FileDocumentService.Get(new Guid(filed_document_guid));
+            var owner = _PersonnelService.Get(doc.PERSONNEL_OWNER);
+            string filepath = Path.Combine(_HostingEnvironment.WebRootPath, "Templates\\" + doc.PDF_FILENAME);
+            string newFile = Path.Combine(_HostingEnvironment.WebRootPath, "Documents\\" + doc.DOCUMENT_NAME);
+
+            //load the PDF here!
+            using (MemoryStream ms = new MemoryStream())
+            {
+                PdfReader pdfReader = new PdfReader(filepath);
+                
+                using (PdfStamper pdfStamper = new PdfStamper(pdfReader, ms))
+                {
+                    AcroFields pdfFormFields = pdfStamper.AcroFields;
+                    pdfFormFields.SetField("1 NAME Last First Middle", owner.LAST_NAME + ", " + owner.FIRST_NAME + " " + owner.MIDDLE_NAME);
+                    pdfFormFields.SetField("2 RANK", owner.RANK);
+                    pdfFormFields.SetField("3 DOD ID NUMBER", owner.DOD_NUMBER);
+                    pdfFormFields.SetField("4 ORGANIZATION", "?"); //ask about this
+                    pdfFormFields.SetField("5 SEX", owner.SEX);
+                    pdfFormFields.SetField("6 HEIGHT", owner.WEIGHT);
+                    pdfFormFields.SetField("7 WEIGHT", owner.WEIGHT);
+                    pdfFormFields.SetField("8 EYE COLOR", owner.EYE_COLOR);
+                    pdfFormFields.SetField("9 HAIR COLOR", owner.HAIR_COLOR);
+                    pdfFormFields.SetField("10 PLACE OF BIRTH City and State", owner.PLACE_OF_BIRTH);
+                    pdfFormFields.SetField("11 DOB YYYYMMMDD", owner.DOB.Year.ToString() + owner.DOB.Month.ToString() + owner.DOB.Day.ToString());
+                    pdfFormFields.SetField("12 STATE OF ISSUE", owner.CIVILIAN_LIC_STATE);
+                    pdfFormFields.SetField("13 LICENSE NUMBER", owner.CIVILIAN_LIC_NUMBER);
+                    pdfFormFields.SetField("14 ISSUE DATE MMDDYYYY", owner.CIVILIAN_ISSUE_DATE.Month.ToString() + "/" + owner.CIVILIAN_ISSUE_DATE.Day.ToString() + "/" + owner.CIVILIAN_ISSUE_DATE.Year.ToString());
+                    pdfFormFields.SetField("15 EXP DATE MMDDYYYY", owner.CIVILIAN_EXP_DATE.Month.ToString() + "/" + owner.CIVILIAN_EXP_DATE.Day.ToString() + "/" + owner.CIVILIAN_EXP_DATE.Year.ToString());
+                    pdfFormFields.SetField("16 CLASS OF VEHICLE", owner.CLASS_OF_VEHICLE);
+
+                    pdfStamper.FormFlattening = false;
+                   
+                }
+
+                string Username = "ce2381cf-5b03-447c-b6c9-5ebba8572212";
+                string Password = "[*]Balcony711";
+                string IntegrationKey = "a9d661a1-c751-40fa-9fc5-4b1a5865b08b";
+
+
+                string basePath = "https://demo.docusign.net/restapi";
+
+                ApiClient apiClient = new ApiClient(basePath);
+                Configuration.Default.ApiClient = apiClient;
+
+                string authHeader = "{\"Username\":\"" + Username + "\", \"Password\":\"" + Password + "\", \"IntegratorKey\":\"" + IntegrationKey + "\"}";
+                Configuration.Default.AddDefaultHeader("X-DocuSign-Authentication", authHeader);
+
+                AuthenticationApi authApi = new AuthenticationApi();
+                LoginInformation loginInfo = authApi.Login();
+                string accountID = loginInfo.LoginAccounts[0].AccountId;
+
+                byte[] fileBytes = ms.ToArray();
+                EnvelopeDefinition enDef = new EnvelopeDefinition();
+
+                enDef.EmailSubject = "[C# DocuSign Sig Request]";
+            
+                DocuSign.eSign.Model.Document document = new DocuSign.eSign.Model.Document();
+                document.DocumentBase64 = Convert.ToBase64String(fileBytes);
+                document.Name = doc.DOCUMENT_NAME;
+                document.DocumentId = "1";
+
+                enDef.Documents = new List<DocuSign.eSign.Model.Document>();
+                enDef.Documents.Add(document);
+
+                Signer signer = new Signer();
+                signer.Email = "mitchell@marshhome.net";
+                signer.Name = "Mitchell";
+                signer.RecipientId = "1";
+                signer.ClientUserId = owner.PERSONNEL_ID.ToString();
+
+                signer.Tabs = new Tabs();
+                signer.Tabs.SignHereTabs = new List<SignHere>();
+                SignHere signHere = new SignHere();
+                signHere.DocumentId = "1";
+                signHere.PageNumber = "1";
+                signHere.RecipientId = "1";
+                signHere.XPosition = "300";
+                signHere.YPosition = "170";
+                signer.Tabs.SignHereTabs.Add(signHere);
+
+                enDef.Recipients = new Recipients();
+                enDef.Recipients.Signers = new List<Signer>();
+                enDef.Recipients.Signers.Add(signer);
+                enDef.Status = "sent";
+
+                EnvelopesApi envelopesApi = new EnvelopesApi();
+                EnvelopeSummary envelopeSummary = envelopesApi.CreateEnvelope(accountID, enDef);
+
+                RecipientViewRequest viewOptions = new RecipientViewRequest()
+                {
+                    ReturnUrl = "https://localhost:44372/api/Signed/?id=" + doc.DOCUMENT_GUID,
+                    ClientUserId = doc.PERSONNEL_OWNER.ToString(),
+                    AuthenticationMethod = "email",
+                    UserName = enDef.Recipients.Signers[0].Name,
+                    Email = enDef.Recipients.Signers[0].Email
+                };
+                ViewUrl recipientView = envelopesApi.CreateRecipientView(accountID, envelopeSummary.EnvelopeId, viewOptions);
+                Console.WriteLine("ViewUrl:\n{0}", JsonConvert.SerializeObject(recipientView));
+
+                //System.Diagnostics.Process.Start(recipientView.Url);
+
+                return Redirect(recipientView.Url);
+            }
+           
+                
+
+        }
+        [HttpGet]
+        public IActionResult Signed()
+        {
+            return View();
+        }
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -222,6 +427,17 @@ namespace PermitPalace.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public struct DocumentRequest
+        {
+            public string doc_url { get; set; }
+        }
+        [HttpGet]
+        public JsonResult GetBasicInformation(string guid)
+        {
+            DocumentRequest req = new DocumentRequest();
+            req.doc_url = Path.Combine(_HostingEnvironment.WebRootPath, "Documents/NAVMC_10694.pdf");
+            return Json(req);
         }
     }
 }

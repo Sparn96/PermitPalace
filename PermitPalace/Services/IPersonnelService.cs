@@ -13,6 +13,7 @@ namespace PermitPalace.Services
         PERSONNEL_DATA Update(PERSONNEL_DATA update);
         PERSONNEL_DATA Remove(PERSONNEL_DATA remove);
         PERSONNEL_DATA Get(string DOD_NUMBER);
+        PERSONNEL_DATA Get(Guid personnel_guid);
         BasicPersonnelInfo GetBasicInformation(string DOD_NUMBER);
         IEnumerable<PERSONNEL_DATA> FindByName(string full_name);
         IEnumerable<PERSONNEL_DATA> FindByDOB(DateTime dob);
@@ -73,6 +74,11 @@ namespace PermitPalace.Services
         public PERSONNEL_DATA Get(string DOD_NUMBER)
         {
             return _context.PERSONNEL_DATA.FirstOrDefault(f => f.DOD_NUMBER == DOD_NUMBER);
+        }
+
+        public PERSONNEL_DATA Get(Guid personnel_guid)
+        {
+            return _context.PERSONNEL_DATA.FirstOrDefault(f => f.PERSONNEL_ID == personnel_guid);
         }
 
         public BasicPersonnelInfo GetBasicInformation(string DOD_NUMBER)
