@@ -15,9 +15,9 @@ namespace PermitPalace.Services
     }
     public interface IFileDocumentService
     {
-        FILLED_DOCUMENT File(FILLED_DOCUMENT add);
-        FILLED_DOCUMENT Remove(FILLED_DOCUMENT remove);
-        FILLED_DOCUMENT Update(FILLED_DOCUMENT update);
+        FILLED_DOCUMENT File(FILLED_DOCUMENT add, string user);
+        FILLED_DOCUMENT Remove(FILLED_DOCUMENT remove, string user);
+        FILLED_DOCUMENT Update(FILLED_DOCUMENT update, string user);
         FILLED_DOCUMENT Get(Guid filed_guid);
         IEnumerable<FILLED_DOCUMENT> GetAll(FileFindWhereParam p);
         IEnumerable<FILLED_DOCUMENT> GetAllFromPersonnel(Guid personnel_id);
@@ -37,8 +37,12 @@ namespace PermitPalace.Services
             _context = ctx;
         }
 
-        public FILLED_DOCUMENT File(FILLED_DOCUMENT add)
+        public FILLED_DOCUMENT File(FILLED_DOCUMENT add, string user)
         {
+            add.last_modified_by = user;
+            add.date_last_modified = DateTime.Now;
+            add.date_created = DateTime.Now;
+            add.created_by = user;
             var file = _context.FILED_DOCUMENT.Add(add);
             _context.SaveChanges();
             return file.Entity;
@@ -77,8 +81,10 @@ namespace PermitPalace.Services
             return _context.FILED_DOCUMENT.Where(f => f.PERSONNEL_OWNER == personnel_id);
         }
 
-        public FILLED_DOCUMENT Remove(FILLED_DOCUMENT remove)
+        public FILLED_DOCUMENT Remove(FILLED_DOCUMENT remove, string user)
         {
+            remove.last_modified_by = user;
+            remove.date_last_modified = DateTime.Now;
             var file = _context.FILED_DOCUMENT.Remove(remove);
             _context.SaveChanges();
             return file.Entity;
@@ -89,8 +95,10 @@ namespace PermitPalace.Services
             throw new NotImplementedException();
         }
 
-        public FILLED_DOCUMENT Update(FILLED_DOCUMENT update)
+        public FILLED_DOCUMENT Update(FILLED_DOCUMENT update, string user)
         {
+            update.last_modified_by = user;
+            update.date_last_modified = DateTime.Now;
             var file = _context.FILED_DOCUMENT.Update(update);
             _context.SaveChanges();
             return file.Entity;

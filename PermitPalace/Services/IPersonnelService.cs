@@ -9,9 +9,9 @@ namespace PermitPalace.Services
     public interface IPersonnelService
     {
         //PERSONNEL_DATA Add(BasicPersonnelData basic_data);
-        PERSONNEL_DATA Add(PERSONNEL_DATA data);
-        PERSONNEL_DATA Update(PERSONNEL_DATA update);
-        PERSONNEL_DATA Remove(PERSONNEL_DATA remove);
+        PERSONNEL_DATA Add(PERSONNEL_DATA data, string user);
+        PERSONNEL_DATA Update(PERSONNEL_DATA update, string user);
+        PERSONNEL_DATA Remove(PERSONNEL_DATA remove, string user);
         PERSONNEL_DATA Get(string DOD_NUMBER);
         PERSONNEL_DATA Get(Guid personnel_guid);
         BasicPersonnelInfo GetBasicInformation(string DOD_NUMBER);
@@ -38,8 +38,13 @@ namespace PermitPalace.Services
         //    data.HOME_OF_RECORD =  basic_data.HOME_OF_RECORD;
         //}
 
-        public PERSONNEL_DATA Add(PERSONNEL_DATA data)
+        public PERSONNEL_DATA Add(PERSONNEL_DATA data, string user)
         {
+            data.last_modified_by = user;
+            data.date_last_modified = DateTime.Now;
+            data.date_created = DateTime.Now;
+            data.created_by = user;
+
             var da = _context.PERSONNEL_DATA.Add(data);
             _context.SaveChanges();
             return da.Entity;
@@ -130,15 +135,19 @@ namespace PermitPalace.Services
             return marine;
         }
 
-        public PERSONNEL_DATA Remove(PERSONNEL_DATA remove)
+        public PERSONNEL_DATA Remove(PERSONNEL_DATA remove, string user)
         {
+            remove.last_modified_by = user;
+            remove.date_last_modified = DateTime.Now;
             var da = _context.PERSONNEL_DATA.Remove(remove);
             _context.SaveChanges();
             return da.Entity;
         }
 
-        public PERSONNEL_DATA Update(PERSONNEL_DATA update)
+        public PERSONNEL_DATA Update(PERSONNEL_DATA update, string user)
         {
+            update.last_modified_by = user;
+            update.date_last_modified = DateTime.Now;
             var da = _context.PERSONNEL_DATA.Update(update);
             _context.SaveChanges();
             return da.Entity;

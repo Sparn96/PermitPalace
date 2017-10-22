@@ -8,9 +8,9 @@ namespace PermitPalace.Services
 {
     public interface IPermitService
     {
-        PERMIT_DATA Add(PERMIT_DATA add);
-        PERMIT_DATA Remove(PERMIT_DATA remove);
-        PERMIT_DATA Update(PERMIT_DATA update);
+        PERMIT_DATA Add(PERMIT_DATA add, string user);
+        PERMIT_DATA Remove(PERMIT_DATA remove, string user);
+        PERMIT_DATA Update(PERMIT_DATA update, string user);
         PERMIT_DATA Get(Guid permit_guid);
         IEnumerable<PERMIT_DATA> GetAllPermitsForPersonnel(Guid personnel_guid);
         IEnumerable<PERMIT_DATA> GetAllExpired();
@@ -23,8 +23,12 @@ namespace PermitPalace.Services
             _context = ctx;
         }
 
-        public PERMIT_DATA Add(PERMIT_DATA add)
+        public PERMIT_DATA Add(PERMIT_DATA add, string user)
         {
+            add.last_modified_by = user;
+            add.date_last_modified = DateTime.Now;
+            add.date_created = DateTime.Now;
+            add.created_by = user;
             var p = _context.PERMIT_DATA.Add(add);
             _context.SaveChanges();
             return p.Entity;
@@ -45,15 +49,19 @@ namespace PermitPalace.Services
             return _context.PERMIT_DATA.Where(f => f.PERSONNEL_ID == personnel_guid);
         }
 
-        public PERMIT_DATA Remove(PERMIT_DATA remove)
+        public PERMIT_DATA Remove(PERMIT_DATA remove, string user)
         {
+            remove.last_modified_by = user;
+            remove.date_last_modified = DateTime.Now;
             var p = _context.PERMIT_DATA.Remove(remove);
             _context.SaveChanges();
             return p.Entity;
         }
 
-        public PERMIT_DATA Update(PERMIT_DATA update)
+        public PERMIT_DATA Update(PERMIT_DATA update, string user)
         {
+            update.last_modified_by = user;
+            update.date_last_modified = DateTime.Now;
             var p = _context.PERMIT_DATA.Update(update);
             _context.SaveChanges();
             return p.Entity;

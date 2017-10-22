@@ -161,7 +161,7 @@ namespace PermitPalace.Controllers
                     marine._3270 = model._3270;
                     marine.PERSONNEL_ID = new Guid();
 
-                    _PersonnelService.Add(marine);
+                    _PersonnelService.Add(marine, HttpContext.User.Identity.Name);
 
                     var newMarine = _DocumentService.GetByName("NAVMC_10694.pdf");
 
@@ -179,7 +179,7 @@ namespace PermitPalace.Controllers
                     newDoc.last_modified_by = HttpContext.User.Identity.Name;
                     //newDoc.PERMIT_GUID = null;
                     newDoc.PERSONNEL_OWNER = marine.PERSONNEL_ID;
-                    _FileDocumentService.File(newDoc);
+                    _FileDocumentService.File(newDoc,HttpContext.User.Identity.Name);
 
                     return RedirectToAction("Index");
                 }
@@ -408,7 +408,16 @@ namespace PermitPalace.Controllers
 
             return View();
         }
-
+        [HttpGet, Route("AddNewTemplate")]
+        public IActionResult AddNewTemplate()
+        {
+            //DOCUMENT_DATA doc = new DOCUMENT_DATA();
+            //doc.DOCUEMNT_GUID = new Guid();
+            //doc.DOCUMENT_NAME = "OF_345.pdf";
+            //doc.REQUIRES_SIGNATURE = true;
+            //_DocumentService.Add(doc, HttpContext.User.Identity.Name);
+            return RedirectToAction("Index");
+        }
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

@@ -26,7 +26,7 @@ namespace PermitPalace.Controllers
             var doc = _FiledDocumentService.Get(Guid.Parse(id));
             doc.IS_SIGNED = true;
            // Console.WriteLine("\n" + d.@event);
-            _FiledDocumentService.Update(doc);
+            _FiledDocumentService.Update(doc, "DOCUSIGN");
             return View();
         }
         //public struct DocuSignEvent
